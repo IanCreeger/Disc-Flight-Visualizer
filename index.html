@@ -6,14 +6,16 @@
     <title>Ultimate Disc Golf Flight Visualizer</title>
     <style>
         :root {
-            --bg-dark: #121214;
-            --card-dark: #1e1e24;
+            --bg-dark: #0f0f11;
+            --card-dark: #1a1a20;
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
             --accent-green: #10b981;
             --accent-green-hover: #059669;
             --accent-blue: #3b82f6;
-            --border-color: #374151;
+            --accent-amber: #f59e0b;
+            --accent-red: #ef4444;
+            --border-color: #2d2d37;
         }
 
         * {
@@ -30,36 +32,42 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 15px;
         }
 
         .app-container {
             width: 100%;
-            max-width: 1050px;
+            max-width: 1200px;
             background-color: var(--card-dark);
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
             border: 1px solid var(--border-color);
             overflow: hidden;
             display: grid;
             grid-template-columns: 1fr;
         }
 
-        @media (min-width: 900px) {
+        @media (min-width: 950px) {
             .app-container {
-                grid-template-columns: 420px 1fr;
+                grid-template-columns: 460px 1fr;
+                height: 850px;
             }
         }
 
         /* Sidebar Styling */
         .sidebar {
-            padding: 25px;
+            padding: 24px;
             border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 18px;
             overflow-y: auto;
-            max-height: 90vh;
+        }
+
+        @media (min-width: 950px) {
+            .sidebar {
+                max-height: 100%;
+            }
         }
 
         .header h1 {
@@ -90,10 +98,13 @@
         .section-title {
             font-size: 12px;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.08em;
             color: var(--text-muted);
             margin-bottom: 12px;
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .grid-2 {
@@ -106,7 +117,7 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         label {
@@ -124,12 +135,12 @@
         }
 
         select {
-            background-color: #2a2a35;
+            background-color: #24242e;
             color: var(--text-main);
             border: 1px solid var(--border-color);
             padding: 10px;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             outline: none;
             cursor: pointer;
             transition: border-color 0.2s;
@@ -144,11 +155,12 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 8px;
-            background-color: #121214;
+            background-color: #111115;
             padding: 10px;
             border-radius: 10px;
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-color);
         }
 
         .flight-stat {
@@ -175,7 +187,7 @@
             width: 100%;
             height: 6px;
             border-radius: 3px;
-            background: #2a2a35;
+            background: #24242e;
             outline: none;
         }
 
@@ -197,13 +209,13 @@
         /* Action Buttons */
         .btn {
             background-color: var(--accent-green);
-            color: #121214;
+            color: #0f0f11;
             font-weight: 700;
             padding: 12px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 14px;
             transition: background-color 0.2s, transform 0.1s;
             display: flex;
             align-items: center;
@@ -220,16 +232,6 @@
             transform: scale(0.98);
         }
 
-        .btn-secondary {
-            background-color: #2a2a35;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-secondary:hover {
-            background-color: #353542;
-        }
-
         /* Preset Chips */
         .presets {
             display: flex;
@@ -238,7 +240,7 @@
         }
 
         .preset-chip {
-            background-color: #2a2a35;
+            background-color: #24242e;
             border: 1px solid var(--border-color);
             color: var(--text-main);
             font-size: 11px;
@@ -250,22 +252,21 @@
 
         .preset-chip:hover {
             border-color: var(--accent-green);
-            background-color: #30303e;
+            background-color: #2d2d3b;
         }
 
         /* Map Canvas Workspace */
         .visualizer-container {
             position: relative;
-            background-color: #0b0b0d;
+            background-color: #08080a;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             padding: 20px;
-            aspect-ratio: 1 / 1.4;
-            max-height: 90vh;
+            aspect-ratio: 1 / 1.3;
         }
 
-        @media (min-width: 900px) {
+        @media (min-width: 950px) {
             .visualizer-container {
                 aspect-ratio: auto;
                 height: 100%;
@@ -287,17 +288,32 @@
             z-index: 10;
             pointer-events: none;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 10px;
             width: 100%;
         }
 
+        @media (min-width: 500px) {
+            .overlay-hud {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
         .hud-card {
-            background-color: rgba(30, 30, 36, 0.85);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(26, 26, 32, 0.9);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             padding: 10px 14px;
-            border-radius: 8px;
+            border-radius: 10px;
             pointer-events: auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .hud-col {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .spin-indicator {
@@ -326,19 +342,52 @@
             position: absolute;
             bottom: 20px;
             left: 20px;
+            right: 20px;
             z-index: 10;
             pointer-events: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+        }
+
+        .stats-card {
+            background-color: rgba(26, 26, 32, 0.9);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 14px;
+            border-radius: 10px;
+            pointer-events: auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .stats-hud-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: bold;
+            margin-bottom: 2px;
         }
 
         .stats-hud-data {
-            font-size: 12px;
+            font-size: 16px;
             font-family: monospace;
-            color: var(--text-muted);
+            font-weight: bold;
+            color: var(--accent-green);
         }
 
-        .stats-hud-data span {
-            color: var(--accent-green);
-            font-weight: bold;
+        .stats-hud-warn {
+            color: var(--accent-amber);
+            font-size: 11px;
+            grid-column: 1 / -1;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .icon-svg {
+            display: inline-block;
+            vertical-align: middle;
         }
     </style>
 </head>
@@ -348,13 +397,16 @@
     <!-- Configuration Sidebar -->
     <div class="sidebar">
         <div class="header">
-            <h1>Disc <span>Flight</span> Lab</h1>
-            <p>Physics-accurate flight trajectory sandbox</p>
+            <h1>Disc <span>Flight</span> Pro</h1>
+            <p>Physics, Wind, & Elevation Simulator</p>
         </div>
 
-        <!-- Bio-Mechanic Inputs -->
+        <!-- Bio-Mechanic & Power Inputs -->
         <div class="control-section">
-            <div class="section-title">Throw Mechanics</div>
+            <div class="section-title">
+                <svg class="icon-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v8H2z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+                Throw Mechanics & Power
+            </div>
             <div class="grid-2">
                 <div class="input-group">
                     <label for="handedness">Dominant Hand</label>
@@ -372,19 +424,28 @@
                 </div>
             </div>
 
-            <div class="input-group">
-                <label for="releaseAngle">Release Angle</label>
-                <select id="releaseAngle">
-                    <option value="flat" selected>Flat (Parallel)</option>
-                    <option value="hyzer">Hyzer (Wing Tilted Down)</option>
-                    <option value="anhyzer">Anhyzer (Wing Tilted Up)</option>
-                </select>
+            <div class="grid-2">
+                <div class="input-group">
+                    <label for="releaseAngle">Release Angle</label>
+                    <select id="releaseAngle">
+                        <option value="flat" selected>Flat</option>
+                        <option value="hyzer">Hyzer (Tilt Down)</option>
+                        <option value="anhyzer">Anhyzer (Tilt Up)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="armSpeed">Arm Speed <span class="label-val" id="valArmSpeed" style="color:var(--accent-blue)">9</span></label>
+                    <input type="range" id="armSpeed" min="1" max="15" value="9" step="1">
+                </div>
             </div>
         </div>
 
         <!-- Disc Rating Inputs -->
         <div class="control-section">
-            <div class="section-title">Disc Aerodynamics</div>
+            <div class="section-title">
+                <svg class="icon-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                Disc Profile
+            </div>
             
             <div class="flight-number-grid">
                 <div class="flight-stat">
@@ -405,43 +466,73 @@
                 </div>
             </div>
 
-            <div class="input-group">
-                <label for="speed">Speed <span class="label-val" id="valSpeed">9</span></label>
-                <input type="range" id="speed" min="1" max="14" value="9" step="1">
+            <div class="grid-2">
+                <div class="input-group">
+                    <label for="speed">Rated Speed <span class="label-val" id="valSpeed">9</span></label>
+                    <input type="range" id="speed" min="1" max="14" value="9" step="1">
+                </div>
+                <div class="input-group">
+                    <label for="glide">Glide <span class="label-val" id="valGlide">5</span></label>
+                    <input type="range" id="glide" min="1" max="7" value="5" step="0.5">
+                </div>
             </div>
 
-            <div class="input-group">
-                <label for="glide">Glide <span class="label-val" id="valGlide">5</span></label>
-                <input type="range" id="glide" min="1" max="7" value="5" step="0.5">
-            </div>
-
-            <div class="input-group">
-                <label for="turn">Turn (Stability) <span class="label-val" id="valTurn">-1</span></label>
-                <input type="range" id="turn" min="-5" max="1" value="-1" step="0.5">
-            </div>
-
-            <div class="input-group">
-                <label for="fade">Fade <span class="label-val" id="valFade">2</span></label>
-                <input type="range" id="fade" min="0" max="5" value="2" step="0.5">
+            <div class="grid-2">
+                <div class="input-group">
+                    <label for="turn">Turn <span class="label-val" id="valTurn">-1</span></label>
+                    <input type="range" id="turn" min="-5" max="1" value="-1" step="0.5">
+                </div>
+                <div class="input-group">
+                    <label for="fade">Fade <span class="label-val" id="valFade">2</span></label>
+                    <input type="range" id="fade" min="0" max="5" value="2" step="0.5">
+                </div>
             </div>
         </div>
 
-        <!-- Preset Templates -->
+        <!-- Environmental Factors -->
         <div class="control-section">
-            <div class="section-title">Presets & Molds</div>
+            <div class="section-title">
+                <svg class="icon-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path></svg>
+                Environment
+            </div>
+            <div class="grid-2">
+                <div class="input-group">
+                    <label for="windDir">Wind Direction</label>
+                    <select id="windDir">
+                        <option value="none" selected>No Wind</option>
+                        <option value="head">Headwind</option>
+                        <option value="tail">Tailwind</option>
+                        <option value="leftToRight">Crosswind (L → R)</option>
+                        <option value="rightToLeft">Crosswind (R → L)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="windSpeed">Wind Speed <span class="label-val" id="valWindSpeed" style="color:var(--accent-amber)">0 mph</span></label>
+                    <input type="range" id="windSpeed" min="0" max="30" value="0" step="2">
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="elevation">Elevation Slope <span class="label-val" id="valElevation" style="color:var(--accent-blue)">0% (Flat)</span></label>
+                <input type="range" id="elevation" min="-30" max="30" value="0" step="5">
+            </div>
+        </div>
+
+        <!-- Presets -->
+        <div class="control-section">
+            <div class="section-title">Presets</div>
             <div class="presets">
                 <button class="preset-chip" onclick="applyPreset(12, 5, -1, 3)">Destroyer (Stable Driver)</button>
-                <button class="preset-chip" onclick="applyPreset(5, 4, -1, 1)">Buzzz (Neutral Midrange)</button>
-                <button class="preset-chip" onclick="applyPreset(7, 7, -2, 1)">River (High Glide)</button>
-                <button class="preset-chip" onclick="applyPreset(9, 3, 0, 4)">Firebird (Utility Overstable)</button>
-                <button class="preset-chip" onclick="applyPreset(2, 3, 0, 0)">Aviar (Straight Putter)</button>
+                <button class="preset-chip" onclick="applyPreset(5, 4, -1, 1)">Buzzz (Neutral Mid)</button>
+                <button class="preset-chip" onclick="applyPreset(7, 7, -2, 1)">River (Glidy Fairway)</button>
+                <button class="preset-chip" onclick="applyPreset(9, 3, 0, 4)">Firebird (Beefy Utility)</button>
+                <button class="preset-chip" onclick="applyPreset(2, 3, 0, 0)">Aviar (Dead Straight Putter)</button>
             </div>
         </div>
 
-        <!-- Simulation Actions -->
-        <div class="control-section" style="margin-top: auto; padding-top: 20px;">
+        <!-- Launch Button -->
+        <div class="control-section" style="margin-top: auto; padding-top: 15px;">
             <button class="btn" id="btnThrow">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                 Launch Throw
             </button>
         </div>
@@ -449,23 +540,42 @@
 
     <!-- Active Visualizer Frame -->
     <div class="visualizer-container">
-        <!-- Top Overlay Heads-Up Display -->
+        <!-- Top HUD overlays -->
         <div class="overlay-hud">
-            <div class="hud-card spin-indicator">
-                <div class="spin-dot" id="spinIndicatorDot"></div>
-                <span id="spinText">Clockwise Spin</span>
+            <div class="hud-col">
+                <div class="hud-card spin-indicator">
+                    <div class="spin-dot" id="spinIndicatorDot"></div>
+                    <span id="spinText">Clockwise Spin</span>
+                </div>
             </div>
-            <div class="hud-card" id="flightTypeLabel" style="font-size: 12px; font-weight: 700;">
-                RHBH Profile
+            <div class="hud-col">
+                <div class="hud-card" id="flightTypeLabel" style="font-size: 11px; font-weight: 700; text-align: center;">
+                    RHBH Profile
+                </div>
             </div>
         </div>
 
         <canvas id="flightCanvas"></canvas>
 
-        <!-- Bottom Stats Overlay -->
-        <div class="stats-hud hud-card">
-            <div class="stats-hud-data">Distance: <span id="hudDistance">0 ft</span></div>
-            <div class="stats-hud-data">Max Turn Deviation: <span id="hudMaxDeviation">0 ft</span></div>
+        <!-- Bottom Stats Overlay HUD -->
+        <div class="stats-hud">
+            <div class="stats-card">
+                <div class="stats-hud-title">Estimated Distance</div>
+                <div class="stats-hud-data" id="hudDistance">0 ft</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-hud-title">Max Lateral Drift</div>
+                <div class="stats-hud-data" id="hudMaxDeviation" style="color: var(--accent-blue)">0 ft</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-hud-title">Power Match</div>
+                <div class="stats-hud-data" id="hudPowerMatch" style="color: var(--accent-amber)">100%</div>
+            </div>
+            <!-- Alert Warning Line if disc properties create non-ideal flight -->
+            <div class="stats-card stats-hud-warn" id="hudWarningCard" style="display: none;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink: 0;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                <span id="hudWarningText">Warning text placeholder</span>
+            </div>
         </div>
     </div>
 </div>
@@ -474,26 +584,40 @@
     const canvas = document.getElementById('flightCanvas');
     const ctx = canvas.getContext('2d');
 
-    // UI elements mapping
     const elements = {
         handedness: document.getElementById('handedness'),
         throwType: document.getElementById('throwType'),
         releaseAngle: document.getElementById('releaseAngle'),
+        armSpeed: document.getElementById('armSpeed'),
         speed: document.getElementById('speed'),
         glide: document.getElementById('glide'),
         turn: document.getElementById('turn'),
         fade: document.getElementById('fade'),
+        windDir: document.getElementById('windDir'),
+        windSpeed: document.getElementById('windSpeed'),
+        elevation: document.getElementById('elevation'),
         btnThrow: document.getElementById('btnThrow'),
         spinText: document.getElementById('spinText'),
         spinIndicatorDot: document.getElementById('spinIndicatorDot'),
         flightTypeLabel: document.getElementById('flightTypeLabel'),
         hudDistance: document.getElementById('hudDistance'),
-        hudMaxDeviation: document.getElementById('hudMaxDeviation')
+        hudMaxDeviation: document.getElementById('hudMaxDeviation'),
+        hudPowerMatch: document.getElementById('hudPowerMatch'),
+        hudWarningCard: document.getElementById('hudWarningCard'),
+        hudWarningText: document.getElementById('hudWarningText'),
+        
+        // Displays labels
+        valArmSpeed: document.getElementById('valArmSpeed'),
+        valSpeed: document.getElementById('valSpeed'),
+        valGlide: document.getElementById('valGlide'),
+        valTurn: document.getElementById('valTurn'),
+        valFade: document.getElementById('valFade'),
+        valWindSpeed: document.getElementById('valWindSpeed'),
+        valElevation: document.getElementById('valElevation')
     };
 
-    // Animation variables
     let animationFrameId = null;
-    let animProgress = 1.0; // 0.0 to 1.0. 1.0 means static fully drawn path
+    let animProgress = 1.0; 
 
     function resizeCanvas() {
         const container = canvas.parentElement;
@@ -503,16 +627,19 @@
         draw();
     }
 
-    // Helper functions to retrieve active parameters
     function getInputs() {
         return {
             hand: elements.handedness.value,
             throwType: elements.throwType.value,
             angle: elements.releaseAngle.value,
+            armSpeed: parseFloat(elements.armSpeed.value),
             speed: parseFloat(elements.speed.value),
             glide: parseFloat(elements.glide.value),
             turn: parseFloat(elements.turn.value),
-            fade: parseFloat(elements.fade.value)
+            fade: parseFloat(elements.fade.value),
+            windDir: elements.windDir.value,
+            windSpeed: parseFloat(elements.windSpeed.value),
+            elevation: parseFloat(elements.elevation.value)
         };
     }
 
@@ -528,20 +655,26 @@
     function updateDisplays() {
         const config = getInputs();
         
-        // Sync sliders & numeric display tags
-        document.getElementById('valSpeed').innerText = config.speed;
-        document.getElementById('valGlide').innerText = config.glide;
-        document.getElementById('valTurn').innerText = config.turn;
-        document.getElementById('valFade').innerText = config.fade;
+        // Live element numbers matching
+        elements.valArmSpeed.innerText = config.armSpeed;
+        elements.valSpeed.innerText = config.speed;
+        elements.valGlide.innerText = config.glide;
+        elements.valTurn.innerText = config.turn;
+        elements.valFade.innerText = config.fade;
+        elements.valWindSpeed.innerText = config.windSpeed + " mph";
+
+        let elevText = config.elevation + "%";
+        if (config.elevation > 0) elevText += " (Uphill)";
+        else if (config.elevation < 0) elevText += " (Downhill)";
+        else elevText += " (Flat)";
+        elements.valElevation.innerText = elevText;
 
         document.getElementById('hudSpeed').innerText = config.speed;
         document.getElementById('hudGlide').innerText = config.glide;
         document.getElementById('hudTurn').innerText = config.turn;
         document.getElementById('hudFade').innerText = config.fade;
 
-        // Calculate spin orientation
-        // Clockwise spin: Right Hand Backhand (RHBH) and Left Hand Forehand (LHFH)
-        // Counter-clockwise spin: Right Hand Forehand (RHFH) and Left Hand Backhand (LHBH)
+        // Clockwise spin configuration logic
         const isClockwise = (config.hand === 'right' && config.throwType === 'backhand') || 
                             (config.hand === 'left' && config.throwType === 'forehand');
 
@@ -550,81 +683,133 @@
             elements.spinIndicatorDot.style.backgroundColor = "var(--accent-blue)";
         } else {
             elements.spinText.innerText = "Counter-Clockwise Spin (CCW)";
-            elements.spinIndicatorDot.style.backgroundColor = "#e11d48"; // Rose color
+            elements.spinIndicatorDot.style.backgroundColor = "var(--accent-red)";
         }
 
-        // Build descriptive display badge
         const designator = `${config.hand.toUpperCase().slice(0,1)}H${config.throwType.toUpperCase().slice(0,1)}`;
-        elements.flightTypeLabel.innerText = `${designator} Flight Path`;
+        elements.flightTypeLabel.innerText = `${designator} Profile`;
+
+        // Match Power Ratio
+        const powerPct = Math.round((config.armSpeed / config.speed) * 100);
+        elements.hudPowerMatch.innerText = powerPct + "%";
+        if (powerPct < 85) {
+            elements.hudPowerMatch.style.color = "var(--accent-red)";
+        } else if (powerPct > 120) {
+            elements.hudPowerMatch.style.color = "var(--accent-blue)";
+        } else {
+            elements.hudPowerMatch.style.color = "var(--accent-green)";
+        }
     }
 
-    // Aerodynamic curve coordinate calculator
-    function getPathPoints(config, steps = 100) {
+    // Advanced Aerodynamic Calculations
+    function getPathPoints(config, steps = 120) {
         const points = [];
         const logicalW = canvas.width / window.devicePixelRatio;
         const logicalH = canvas.height / window.devicePixelRatio;
 
         const startX = logicalW / 2;
-        const startY = logicalH - 45;
+        const startY = logicalH - 60;
 
-        // Base flight calculation metrics
-        const baseDistanceFt = (config.speed * 26) + (config.glide * 16) + 100; 
-        const yPixelsScale = logicalH - 80; 
-        const maxFlightHeightPixels = (baseDistanceFt / 500) * yPixelsScale;
+        // Apparent airspeed speed adjustments from Wind
+        let airspeedModifier = 0;
+        if (config.windDir === 'head') {
+            airspeedModifier = config.windSpeed * 0.25; 
+        } else if (config.windDir === 'tail') {
+            airspeedModifier = -config.windSpeed * 0.25;
+        }
 
-        // Is spin CW (clockwise)?
+        const effectiveArmSpeed = config.armSpeed + airspeedModifier;
+        const powerRatio = Math.max(0.2, effectiveArmSpeed / config.speed);
+
+        // Adjust Turn based on relative power
+        let calculatedTurn = config.turn;
+        if (powerRatio > 1.0) {
+            // Overpowered: Turn is highly exaggerated/floppy
+            calculatedTurn = config.turn * Math.pow(powerRatio, 1.8);
+        } else {
+            // Underpowered: Turn doesn't register fully, acts overstable
+            calculatedTurn = config.turn * Math.pow(powerRatio, 2.5);
+        }
+
+        // Adjust Fade based on power
+        let calculatedFade = config.fade;
+        if (powerRatio < 1.0) {
+            // Fades sooner and harder because speed drops rapidly
+            calculatedFade = config.fade * (2.2 - powerRatio);
+        } else {
+            // Delayed, weaker final fade due to excessive forward velocity
+            calculatedFade = config.fade * (1 / Math.pow(powerRatio, 0.8));
+        }
+
+        // Base Distance Calculations: Base speed distance + glide
+        let totalDistance = (config.armSpeed * 23) + (config.glide * 14) + 80;
+        
+        // Tailwind drops lift, Headwind increases relative drag
+        if (config.windDir === 'head') {
+            totalDistance *= 0.94; // slight drop due to airspeed drag resistance
+        } else if (config.windDir === 'tail') {
+            totalDistance *= 0.86; // loss of dynamic vertical wing lift
+        }
+
+        // Scaling pixels mapping
+        const yPixelsScale = logicalH - 110; 
+        let flightHeightPixels = (totalDistance / 500) * yPixelsScale;
+
+        // Elevation modifications on ground progression limit
+        let maxProgressT = 1.0;
+        if (config.elevation > 0) {
+            // Uphill: Hits hill earlier (cuts trajectory off)
+            maxProgressT = 1.0 - (config.elevation / 100) * 0.75;
+        } else if (config.elevation < 0) {
+            // Downhill: Disc floats longer over the dropping terrain
+            maxProgressT = 1.0 + (Math.abs(config.elevation) / 100) * 0.55;
+        }
+
         const isCW = (config.hand === 'right' && config.throwType === 'backhand') || 
                      (config.hand === 'left' && config.throwType === 'forehand');
-        
-        // Horizontal multiplier (+1 for Right Hand Backhand/Left Hand Forehand, -1 for mirrored throws)
         const spinMultiplier = isCW ? 1 : -1;
 
-        // 1. High Speed Turn Drift Offset (curves right for CW, left for CCW)
-        // Turn is a negative stat. An understable disc (like -3) turns significantly more.
-        let turnAmount = config.turn * (config.speed / 7) * 20 * spinMultiplier;
-
-        // 2. Low Speed Fade Drift Offset (curves left for CW, right for CCW)
-        // Fade is a positive stat.
-        let fadeAmount = -config.fade * 18 * spinMultiplier;
-
-        // 3. Release Angle Modifications
-        let launchAngleOffset = 0; 
+        // Base values
+        let launchAngleOffset = 0;
         if (config.angle === 'hyzer') {
-            // Adds left curve (CW) / right curve (CCW) early, fights turn
-            launchAngleOffset = -30 * spinMultiplier;
-            fadeAmount -= 15 * spinMultiplier;
+            launchAngleOffset = -35 * spinMultiplier;
+            calculatedFade += 1.0; 
         } else if (config.angle === 'anhyzer') {
-            // Exaggerates early turn to the right (CW) / left (CCW)
-            launchAngleOffset = 30 * spinMultiplier;
-            fadeAmount += 8 * spinMultiplier;
+            launchAngleOffset = 35 * spinMultiplier;
+            calculatedTurn -= 1.0;
         }
 
-        // Generate coordinates along bezier-like logic matching physics states
+        // Generate points list
         for (let i = 0; i <= steps; i++) {
-            const t = i / steps; // progression of the flight 0 to 1
+            const t = (i / steps) * maxProgressT;
 
-            // Y coordinate goes upward
-            const y = startY - (t * maxFlightHeightPixels);
-
-            // Turn happens early in flight (peak transition around 35%-50% distance)
-            const turnFactor = Math.sin(t * Math.PI * 0.75) * (1 - t);
+            // Turn starts early, decays out
+            const turnFactor = Math.sin(t * Math.PI * 0.72) * Math.max(0, 1.0 - t);
             
-            // Fade starts late in flight (curves in dynamically around 60%-100%)
-            const fadeFactor = Math.pow(t, 2.5);
+            // Fade steps up rapidly towards final landing
+            const fadeFactor = Math.pow(t, 2.4);
 
-            // Initial Release Angle trajectory influence
-            const launchFactor = t * (1 - t * 0.5);
+            // Crosswind pushes lateral axis proportional to time in air
+            let crosswindDrift = 0;
+            if (config.windDir === 'leftToRight') {
+                crosswindDrift = config.windSpeed * 1.5 * t;
+            } else if (config.windDir === 'rightToLeft') {
+                crosswindDrift = -config.windSpeed * 1.5 * t;
+            }
 
-            // Compute dynamic X drift
             const x = startX + 
-                      (launchFactor * launchAngleOffset) + 
-                      (turnFactor * turnAmount) + 
-                      (fadeFactor * fadeAmount);
+                      (t * (1 - t * 0.4) * launchAngleOffset) + 
+                      (turnFactor * calculatedTurn * 15 * spinMultiplier) + 
+                      (fadeFactor * -calculatedFade * 17 * spinMultiplier) +
+                      crosswindDrift;
 
-            points.push({ x, y, distance: Math.round(t * baseDistanceFt) });
+            const y = startY - (t * flightHeightPixels);
+            const physicalDist = Math.round(t * totalDistance);
+
+            points.push({ x, y, distance: physicalDist });
         }
 
-        return { points, baseDistance: baseDistanceFt, startX };
+        return { points, totalDistance: Math.round(totalDistance * maxProgressT), startX, powerRatio };
     }
 
     function draw() {
@@ -636,15 +821,16 @@
         const logicalW = w / window.devicePixelRatio;
         const logicalH = h / window.devicePixelRatio;
 
-        // Draw Fairway Distance Markers
-        ctx.strokeStyle = '#23232a';
+        // Draw Fairway Grass Markings (Feet distance)
+        ctx.strokeStyle = '#1e1e26';
         ctx.lineWidth = 1;
-        ctx.fillStyle = '#4b5563';
+        ctx.fillStyle = '#6b7280';
         ctx.font = '10px monospace';
         ctx.textAlign = 'left';
 
-        for (let ft = 100; ft <= 500; ft += 100) {
-            let y = (logicalH - 45) - (ft * ((logicalH - 80) / 500));
+        for (let ft = 100; ft <= 600; ft += 100) {
+            let y = (logicalH - 60) - (ft * ((logicalH - 110) / 500));
+            if (y < 0) continue;
             ctx.beginPath();
             ctx.moveTo(15, y);
             ctx.lineTo(logicalW - 15, y);
@@ -652,18 +838,80 @@
             ctx.fillText(ft + ' ft', 15, y - 5);
         }
 
-        // Center line
-        ctx.strokeStyle = '#18181e';
+        // Center line axis
+        ctx.strokeStyle = '#121216';
         ctx.beginPath();
-        ctx.setLineDash([6, 8]);
+        ctx.setLineDash([5, 8]);
         ctx.moveTo(logicalW / 2, 0);
         ctx.lineTo(logicalW / 2, logicalH);
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // Get calculations
         const config = getInputs();
-        const { points, baseDistance, startX } = getPathPoints(config);
+        const { points, totalDistance, startX, powerRatio } = getPathPoints(config);
+
+        // Update Warnings depending on dynamics
+        let warningText = "";
+        if (powerRatio < 0.75) {
+            warningText = `UNDERPOWERED THROW: High-speed turn skipped. Disc dumping early. (Needs Speed ${config.speed})`;
+        } else if (powerRatio > 1.35 && config.turn <= -1.5) {
+            warningText = "FLIP OVER WARNING: Excessive power ratio and understable profile may trigger a roller cut.";
+        } else if (config.windDir === 'head' && config.windSpeed >= 15 && config.turn <= -2) {
+            warningText = "HEADWIND FLIP RISK: High speed wind likely to turn the disc over permanently.";
+        } else if (config.elevation > 15) {
+            warningText = "UPHILL RESTRICTION: Early hill impact cuts off fade curve finish.";
+        } else if (config.elevation < -15) {
+            warningText = "DOWNHILL GLIDE: Extended air time allows the disc to finish with extra horizontal fade.";
+        }
+
+        if (warningText) {
+            elements.hudWarningCard.style.display = "flex";
+            elements.hudWarningText.innerText = warningText;
+        } else {
+            elements.hudWarningCard.style.display = "none";
+        }
+
+        // Draw Wind Arrow Indicator on Canvas (Top Right)
+        if (config.windDir !== 'none' && config.windSpeed > 0) {
+            const windX = logicalW - 55;
+            const windY = 55;
+            
+            ctx.beginPath();
+            ctx.arc(windX, windY, 20, 0, 2*Math.PI);
+            ctx.strokeStyle = '#2d2d37';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Set drawing rotation angle for wind arrow
+            let angleRad = 0;
+            if (config.windDir === 'head') angleRad = Math.PI / 2; // Up to down on graph (facing thrower)
+            else if (config.windDir === 'tail') angleRad = -Math.PI / 2; // Down to up (carrying forward)
+            else if (config.windDir === 'leftToRight') angleRad = 0; // Left to right
+            else if (config.windDir === 'rightToLeft') angleRad = Math.PI; // Right to left
+
+            ctx.save();
+            ctx.translate(windX, windY);
+            ctx.rotate(angleRad);
+            
+            // Draw arrow shape
+            ctx.beginPath();
+            ctx.moveTo(-12, 0);
+            ctx.lineTo(12, 0);
+            ctx.lineTo(6, -5);
+            ctx.moveTo(12, 0);
+            ctx.lineTo(6, 5);
+            
+            ctx.strokeStyle = 'var(--accent-amber)';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.fillStyle = '#9ca3af';
+            ctx.font = '9px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText("WIND", windX, windY - 25);
+        }
 
         // Draw Flight Path Line up to animProgress
         ctx.beginPath();
@@ -678,7 +926,7 @@
         ctx.lineWidth = 4;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
-        ctx.shadowBlur = 8;
+        ctx.shadowBlur = 10;
         ctx.shadowColor = 'rgba(16, 185, 129, 0.4)';
         ctx.stroke();
         ctx.shadowBlur = 0; // Reset shadow
@@ -687,7 +935,7 @@
         if (limitIndex > 0 && limitIndex < points.length) {
             const discPos = points[limitIndex - 1];
             ctx.beginPath();
-            ctx.arc(discPos.x, discPos.y, 7, 0, 2 * Math.PI);
+            ctx.arc(discPos.x, discPos.y, 8, 0, 2 * Math.PI);
             ctx.fillStyle = '#fff';
             ctx.shadowBlur = 12;
             ctx.shadowColor = '#fff';
@@ -695,27 +943,26 @@
             ctx.shadowBlur = 0;
         }
 
-        // Draw Teepad/Starting Base Dot
+        // Draw Teepad Base Dot
         ctx.beginPath();
-        ctx.arc(startX, logicalH - 45, 6, 0, 2 * Math.PI);
-        ctx.fillStyle = '#374151';
+        ctx.arc(startX, logicalH - 60, 6, 0, 2 * Math.PI);
+        ctx.fillStyle = '#24242e';
         ctx.strokeStyle = '#fff';
         ctx.lineWidth = 2;
         ctx.fill();
         ctx.stroke();
 
         // Calculate and update stats on display
-        const activeDist = Math.round(baseDistance * animProgress);
+        const activeDist = Math.round(totalDistance * animProgress);
         elements.hudDistance.innerText = `${activeDist} ft`;
 
-        // Calculate Maximum turn drift (the furthest offset value in flight)
+        // Calculate Maximum deviation offset
         let maxDev = 0;
         for (let i = 0; i < limitIndex; i++) {
             const dev = Math.abs(points[i].x - startX);
             if (dev > maxDev) maxDev = dev;
         }
-        // Conversion factor from canvas pixels to physical feet approximation
-        const maxDevFeet = Math.round(maxDev * (500 / (logicalH - 80)) * 0.7);
+        const maxDevFeet = Math.round(maxDev * (500 / (logicalH - 110)) * 0.72);
         elements.hudMaxDeviation.innerText = `${maxDevFeet} ft`;
 
         ctx.setTransform(1, 0, 0, 1, 0, 0); // reset scale
@@ -733,7 +980,7 @@
         if (animationFrameId) cancelAnimationFrame(animationFrameId);
         animProgress = 0.0;
         
-        const duration = 2200; // milliseconds
+        const duration = 2500; // ms
         const startTime = performance.now();
 
         function step(timestamp) {
@@ -748,8 +995,12 @@
         animationFrameId = requestAnimationFrame(step);
     }
 
-    // Attach interaction listeners to controls
-    const inputIds = ['speed', 'glide', 'turn', 'fade', 'releaseAngle', 'handedness', 'throwType'];
+    const inputIds = [
+        'speed', 'glide', 'turn', 'fade', 'releaseAngle', 
+        'handedness', 'throwType', 'armSpeed', 'windDir', 
+        'windSpeed', 'elevation'
+    ];
+
     inputIds.forEach(id => {
         elements[id].addEventListener('input', () => {
             updateDisplays();
